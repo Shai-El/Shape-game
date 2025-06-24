@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lawful Image Generator - Expanded</title>
+<style>
+  body {
+    font-family: monospace;
+    background: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+  }
+  #canvas {
+    border: 2px solid #333;
+    background: #fff;
+    margin-top: 1rem;
+    cursor: default;
+  }
+  #inputField {
+    width: 300px;
+    font-size: 1rem;
+    padding: 0.5rem;
+  }
+  button {
+    margin: 0.3rem;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  #tipLink {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+  #designerControls {
+    margin-top: 1rem;
+    border: 1px solid #999;
+    padding: 1rem;
+    background: #eee;
+    width: 320px;
+  }
+  #shapeName {
+    width: 160px;
+    margin-left: 0.5rem;
+  }
+</style>
+</head>
+<body>
+
+<h1>🧠 Lawful Image Generator - Expanded</h1>
+
+<input id="inputField" placeholder="Type a command, e.g., can of beans or saved shape name" />
+<button onclick="renderImage()">Deploy Camera</button>
+
+<svg id="canvas" width="300" height="300"></svg>
+
+<div>
+  <button onclick="downloadSVG()">Download SVG</button>
+  <button onclick="downloadPNG()">Download PNG</button>
+</div>
+
+<div id="designerControls">
+  <h3>Procedural Designer</h3>
+  <button onclick="addRect()">Add Rectangle</button>
+  <button onclick="addCircle()">Add Circle</button>
+  <br />
+  Name shape to save: <input id="shapeName" placeholder="shape name" />
+  <button onclick="saveShape()">Save Shape</button>
+</div>
+
+<div id="tipLink">
+  ❤️ Like it? <a href="https://ko-fi.com/YOUR_USERNAME" target="_blank">Tip the creator</a>
+</div>
+
+<script>
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.getElementById("canvas");
+
+  // Store current drawn procedural shapes (array of SVG elements)
+  let currentShapes = [];
+
+  // Prebuilt render objects:
+  function renderImage() {
+    const command = document.getElementById("inputField").value.toLowerCase().trim();
+    svg.innerHTML = "";
+    currentShapes = [];
+
+    // Check if command matches saved procedural shape:
+    const savedShapeData = localStorage.getItem("lawful_shape_" + command);
+    if (savedShapeData) {
+      // Load saved SVG shape data:
+      svg.innerHTML = savedShapeData;
+      return;
+    }
+
+    if (command.includes("beans")) {
+      drawBeans();
+    } else if (command.includes("cup")) {
+      drawCup();
+    } else if (command.includes("book")) {
+      drawBook();
+    } else if (command.includes("stone")) {
+      drawStone();
+    } else if (command.includes("sword")) {
+      drawSword();
+    } else {
+      const text = document.createElementNS(NS, "text");
+      text.setAttribute("x", 20);
+      text.setAttribute("y", 150);
+      text.setAttribute("font-size", "16");
+      text.textContent = "Command not recognized.";
+      svg.appendChild(text);
+    }
+  }
+
+  // Draw functions for prebuilt objects:
+  function drawBeans() {
+    const can = document.createElementNS(NS, "rect");
+    can.setAttribute("x", "120");
+    can.setAttribute("y", "60");
+    can.setAttribute("width", "60");
+    can.setAttribute("height", "180");
+    can.setAttribute("rx", "15");
+    can.setAttribute("fill", "#ccc");
+    can.setAttribute("stroke", "#333");
+    svg.appendChild(can);
+
+    const stripe = document.createElementNS(NS, "rect");
+    stripe.setAttribute("x", "120");
+    stripe.setAttribute("y", "130");
+    stripe.setAttribute("width", "60");
+    stripe.setAttribute("height", "30");
+    stripe.setAttribute("fill", "#999");
+    svg.appendChild(stripe);
+  }
+
+  function drawCup() {
+    const cup = document.createElementNS(NS, "ellipse");
+    cup.setAttribute("cx", "150");
+    cup.setAttribute("cy", "90");
+    cup.setAttribute("rx", "30");
+    cup.setAttribute("ry", "10");
+    cup.setAttribute("fill", "#ddd");
+    svg.appendChild(cup);
+
+    const body = document.createElementNS(NS, "rect");
+    body.setAttribute("x", "120");
+    body.setAttribute("y", "90");
+    body.setAttribute("width", "60");
+    body.setAttribute("height", "100");
+    body.setAttribute("fill", "#eee");
+    body.setAttribute("stroke", "#333");
+    svg.appendChild(body);
+  }
+
+  function drawBook() {
+    const book = document.createElementNS(NS, "rect");
+    book.setAttribute("x", "100");
+    book.setAttribute("y", "100");
+    book.setAttribute("width", "100");
+    book.setAttribute("height", "60");
+    book.setAttribute("fill", "#fafafa");
+    book.setAttribute("stroke", "#333");
+    svg.appendChild(book);
+
+    const spine = document.createElementNS(NS, "rect");
+    spine.setAttribute("x", "100");
+    spine.setAttribute("y", "100");
+    spine.setAttribute("width", "10");
+    spine.setAttribute("height", "60");
+    spine.setAttribute("fill", "#ccc");
+    svg.appendChild(spine);
+  }
+
+  function drawStone() {
+    const stone = document.createElementNS(NS, "ellipse");
+    stone.setAttribute("cx", "150");
+    stone.setAttribute("cy", "150");
+    stone.setAttribute("rx", "40");
+    stone.setAttribute("ry", "30");
+    stone.setAttribute("fill", "#aaa");
+    stone.setAttribute("stroke", "#333");
+    svg.appendChild(stone);
+  }
+
+  function drawSword() {
+    const blade = document.createElementNS(NS, "rect");
+    blade.setAttribute("x", "145");
+    blade.setAttribute("y", "50");
+    blade.setAttribute("width", "10");
+    blade.setAttribute("height", "150");
+    blade.setAttribute("fill", "#ccc");
+    svg.appendChild(blade);
+
+    const hilt = document.createElementNS(NS, "rect");
+    hilt.setAttribute("x", "130");
+    hilt.setAttribute("y", "190");
+    hilt.setAttribute("width", "40");
+    hilt.setAttribute("height", "10");
+    hilt.setAttribute("fill", "#333");
+    svg.appendChild(hilt);
+  }
+
+  // Procedural Designer functions:
+  function addRect() {
+    const rect = document.createElementNS(NS, "rect");
+    rect.setAttribute("x", 50 + currentShapes.length * 10);
+    rect.setAttribute("y", 50 + currentShapes.length * 10);
+    rect.setAttribute("width", 60);
+    rect.setAttribute("height", 40);
+    rect.setAttribute("fill", "#88c");
+    rect.setAttribute("stroke", "#333");
+    svg.appendChild(rect);
+    currentShapes.push(rect);
+  }
+
+  function addCircle() {
+    const circ = document.createElementNS(NS, "circle");
+    circ.setAttribute("cx", 80 + currentShapes.length * 10);
+    circ.setAttribute("cy", 80 + currentShapes.length * 10);
+    circ.setAttribute("r", 30);
+    circ.setAttribute("fill", "#c88");
+    circ.setAttribute("stroke", "#333");
+    svg.appendChild(circ);
+    currentShapes.push(circ);
+  }
+
+  function saveShape() {
+    if (currentShapes.length === 0) {
+      alert("No shapes to save.");
+      return;
+    }
+    const name = document.getElementById("shapeName").value.trim();
+    if (!name) {
+      alert("Please enter a name for the shape.");
+      return;
+    }
+    // Save the current SVG content as string in localStorage
+    localStorage.setItem("lawful_shape_" + name, svg.innerHTML);
+    alert("Shape saved as '" + name + "'. You can recall it by typing the name.");
+    // Clear input and shapes for next work
+    document.getElementById("shapeName").value = "";
+    currentShapes = [];
+    svg.innerHTML = "";
+  }
+
+  // Download SVG file
+  function downloadSVG() {
+    const serializer = new XMLSerializer();
+    const source = serializer.serializeToString(svg);
+    const svgBlob = new Blob([source], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(svgBlob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "lawful_image.svg";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  // Download PNG file (rasterize SVG)
+  function downloadPNG() {
+    const serializer = new XMLSerializer();
+    const source = serializer.serializeToString(svg);
+    const img = new Image();
+    const svg64 = btoa(source);
+    const b64Start = 'data:image/svg+xml;base64,';
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = svg.clientWidth;
+      canvas.height = svg.clientHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "lawful_image.png";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      });
+    };
+    img.onerror = () => alert("Error loading SVG image.");
+    img.src = b64Start + svg64;
+  }
+</script>
+</body>
+</html>
